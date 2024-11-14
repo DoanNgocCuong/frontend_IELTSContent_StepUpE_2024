@@ -1,52 +1,79 @@
 // frontend/src/FileUpload.js
-import React, { useState } from 'react';
-import FileUploader from '../components/FileUploader';
-import UploadMessage from '../../components/UploadMessage';
+import React, { useState, useRef } from 'react';
 import { uploadFile } from '../../services/api';
 import './FileUpload.css';
 
 function FileUpload() {
-    // State chỉ liên quan đến upload
-    const [file, setFile] = useState(null);
-    const [filename, setFilename] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [uploadState, setUploadState] = useState({
+        file: null,
+        loading: false,
+        message: null,
+        isError: false
+    });
+    
+    const fileInputRef = useRef(null);
 
-    // Xử lý việc chọn file
-    const handleFileChange = (e) => {
-        setFile(e.target.files[0]);
+    const handleButtonClick = async () => {
+        if (!uploadState.file) {
+            // Nếu chưa có file, mở dialog chọn file
+            fileInputRef.current.click();
+        } else {
+            // Nếu đã có file, tiến hành upload
+            try {
+                setUploadState(prev => ({ ...prev, loading: true }));
+                await uploadFile(uploadState.file);
+                setUploadState(prev => ({
+                    ...prev,
+                    loading: false,
+                    message: 'File uploaded successfully!',
+                    isError: false,
+                    file: null // Reset file sau khi upload thành công
+                }));
+            } catch (error) {
+                setUploadState(prev => ({
+                    ...prev,
+                    loading: false,
+                    message: error.message,
+                    isError: true
+                }));
+            }
+        }
     };
 
-    // Xử lý việc upload file
-    const handleUpload = async () => {
-        try {
-            console.log('Starting upload process...');
-            setLoading(true);
-            setError(null);
-            
-            const response = await uploadFile(file);
-            setFilename(response.filename);
-            console.log('File uploaded successfully:', response.filename);
-        } catch (error) {
-            console.error('Upload error:', error);
-            setError(error.message);
-        } finally {
-            setLoading(false);
+    const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+            setUploadState(prev => ({
+                ...prev,
+                file: selectedFile,
+                message: null
+            }));
         }
     };
 
     return (
         <div className="upload-container">
-            <FileUploader 
-                onFileChange={handleFileChange}
-                onUpload={handleUpload}
-                loading={loading}
-                file={file}
+            <input 
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                style={{ display: 'none' }}
             />
-            <UploadMessage 
-                filename={filename}
-                error={error}
-            />
+            
+            <button 
+                className="upload-button"
+                onClick={handleButtonClick}
+                disabled={uploadState.loading}
+            >
+                {uploadState.loading ? 'Uploading...' : 
+                 uploadState.file ? `Upload ${uploadState.file.name}` : 'Upload File'}
+            </button>
+
+            {uploadState.message && (
+                <div className={`message ${uploadState.isError ? 'error-message' : 'success-message'}`}>
+                    {uploadState.message}
+                </div>
+            )}
         </div>
     );
 }
