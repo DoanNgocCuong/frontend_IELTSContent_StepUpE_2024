@@ -9,6 +9,8 @@ function ContentGenerator() {
     const [error, setError] = useState(null);
     const [scriptStatus, setScriptStatus] = useState({});
 
+    const scripts = ['generate_story', 'generate_ipa', 'generate_meaning', 'gen_answer_pic'];
+
     // Xử lý việc chạy script
     const runScript = async (scriptName) => {
         try {
@@ -26,8 +28,21 @@ function ContentGenerator() {
             console.error(`Script ${scriptName} error:`, error);
             setScriptStatus(prev => ({ ...prev, [scriptName]: 'error' }));
             setError(`Error running ${scriptName}: ${error.message}`);
+            throw error; // Re-throw to handle in runAll
         } finally {
             setLoading(false);
+        }
+    };
+
+    const runAll = async () => {
+        setError(null);
+        for (const script of scripts) {
+            try {
+                await runScript(script);
+            } catch (error) {
+                // Stop execution if any script fails
+                break;
+            }
         }
     };
 
@@ -35,19 +50,26 @@ function ContentGenerator() {
         <div className="generator-container">
             <h3>Generate Content</h3>
             <div className="script-buttons">
-                {['generate_story', 'generate_ipa', 'generate_meaning', 'gen_answer_pic']
-                    .map(script => (
-                        <button
-                            key={script}
-                            onClick={() => runScript(script)}
-                            disabled={loading}
-                            className={`script-button ${scriptStatus[script] || ''}`}
-                        >
-                            {script.replace(/_/g, ' ').toUpperCase()}
-                            {scriptStatus[script] === 'running' && 
-                                <span className="loading">...</span>}
-                        </button>
-                    ))}
+                <button
+                    onClick={runAll}
+                    disabled={loading}
+                    className="run-all-button"
+                >
+                    RUN ALL
+                    {loading && <span className="loading">...</span>}
+                </button>
+                {scripts.map(script => (
+                    <button
+                        key={script}
+                        onClick={() => runScript(script)}
+                        disabled={loading}
+                        className={`script-button ${scriptStatus[script] || ''}`}
+                    >
+                        {script.replace(/_/g, ' ').toUpperCase()}
+                        {scriptStatus[script] === 'running' && 
+                            <span className="loading">...</span>}
+                    </button>
+                ))}
             </div>
             {error && <div className="error-message">{error}</div>}
         </div>
