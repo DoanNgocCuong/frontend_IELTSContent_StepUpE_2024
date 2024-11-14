@@ -43,3 +43,8 @@ export const getOutputFiles = async () => {
 export const downloadFile = (filename) => {
     window.open(`${API_BASE_URL}/api/files/download/output/${filename}`, '_blank');
 };
+
+// Download all files as zip from output folder
+export const downloadAllAsZip = () => {
+    window.open(`${API_BASE_URL}/api/files/download/output/all`, '_blank');
+};

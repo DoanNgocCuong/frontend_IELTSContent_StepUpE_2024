@@ -35,7 +35,7 @@ function ContentGenerator() {
         <div className="generator-container">
             <h3>Generate Content</h3>
             <div className="script-buttons">
-                {['generate_story', 'ipa_generate', 'generate_meaning_exercise', 'gen_answer_pic']
+                {['generate_story', 'generate_ipa', 'generate_meaning', 'gen_answer_pic']
                     .map(script => (
                         <button
                             key={script}

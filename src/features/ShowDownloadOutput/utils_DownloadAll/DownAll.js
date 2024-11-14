@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getOutputFiles, downloadFile } from '../../../services/api';
+import { downloadAllAsZip } from '../../../services/api';
 import '../ShowOutput.css';
 
 function DownAll() {
@@ -10,19 +10,10 @@ function DownAll() {
         try {
             setDownloading(true);
             setError(null);
-            
-            // Get list of all files
-            const files = await getOutputFiles();
-            
-            // Download each file with a small delay
-            for (const file of files) {
-                downloadFile(file.name);
-                await new Promise(resolve => setTimeout(resolve, 1000));
-            }
-            
+            downloadAllAsZip();
         } catch (err) {
-            setError('Failed to download all files: ' + err.message);
-            console.error('Error downloading all files:', err);
+            setError('Failed to download files: ' + err.message);
+            console.error('Error downloading files:', err);
         } finally {
             setDownloading(false);
         }
