@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import FileUploader from './components/FileUploader';
+import FileUploader from './features/components/FileUploader';
 import ActionButtons from './components/ActionButtons';
 import { uploadFile, saveData, runScriptApi } from './services/api';
 import { processUploadResponse } from './utils/dataProcessing';

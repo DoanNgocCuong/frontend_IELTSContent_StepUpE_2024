@@ -1,6 +1,6 @@
 // ContentGenerator.js
 import React, { useState } from 'react';
-import { runScriptApi } from './services/api';
+import { runScriptApi } from '../../services/api';
 import './ContentGenerator.css';
 
 function ContentGenerator() {

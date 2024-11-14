@@ -1,7 +1,8 @@
-// FileUpload.js
+// frontend/src/FileUpload.js
 import React, { useState } from 'react';
-import FileUploader from './components/FileUploader';
-import { uploadFile } from './services/api';
+import FileUploader from '../components/FileUploader';
+import UploadMessage from '../../components/UploadMessage';
+import { uploadFile } from '../../services/api';
 import './FileUpload.css';
 
 function FileUpload() {
@@ -42,8 +43,10 @@ function FileUpload() {
                 loading={loading}
                 file={file}
             />
-            {filename && <div className="success-message">File {filename} uploaded successfully!</div>}
-            {error && <div className="error-message">{error}</div>}
+            <UploadMessage 
+                filename={filename}
+                error={error}
+            />
         </div>
     );
 }

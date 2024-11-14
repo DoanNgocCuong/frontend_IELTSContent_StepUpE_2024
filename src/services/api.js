@@ -2,13 +2,15 @@ import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:5000';
 
+// APi cho Upload file
+
 export const uploadFile = async (file) => {
     if (!file) throw new Error('Please select a file first');
     
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await axios.post(`${API_BASE_URL}/upload`, formData, {
+    const response = await axios.post(`${API_BASE_URL}/api/files/upload`, formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
             'Accept': 'application/json'
@@ -20,14 +22,24 @@ export const uploadFile = async (file) => {
     return response;
 };
 
-export const saveData = async (data, filename) => {
-    const dataToSave = data.map(({ id, ...rest }) => rest);
-    return axios.post(`${API_BASE_URL}/update`, {
-        data: dataToSave,
-        filename
-    });
-};
 
+// API cho run script
 export const runScriptApi = async (scriptName) => {
     return axios.post(`${API_BASE_URL}/api/scripts/run/${scriptName}`);
 }; 
+
+
+//  API cho Output
+
+// Lấy danh sách files từ output folder
+export const getOutputFiles = async () => {
+    const response = await fetch(`${API_BASE_URL}/api/files/list/output`);
+    const data = await response.json();
+    if (!data.success) throw new Error(data.error);
+    return data.files;
+};
+
+// Download file từ output folder
+export const downloadFile = (filename) => {
+    window.open(`${API_BASE_URL}/api/files/download/output/${filename}`, '_blank');
+};
