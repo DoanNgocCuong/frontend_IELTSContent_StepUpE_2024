@@ -1,6 +1,7 @@
 // frontend/src/FileUpload.js
 import React, { useState, useRef } from 'react';
 import { uploadFile } from '../../services/api';
+import ShowExampleData from '../ShowInputOutput/ShowExampleData';
 import './FileUpload.css';
 
 function FileUpload() {
@@ -53,6 +54,7 @@ function FileUpload() {
 
     return (
         <div className="upload-container">
+            <ShowExampleData />
             <input 
                 type="file"
                 ref={fileInputRef}

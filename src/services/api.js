@@ -1,6 +1,7 @@
 import axios from 'axios';
+import config from '../config';
 
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = config.API_BASE_URL;
 
 // APi cho Upload file
 
@@ -47,4 +48,17 @@ export const downloadFile = (filename) => {
 // Download all files as zip from output folder
 export const downloadAllAsZip = () => {
     window.open(`${API_BASE_URL}/api/files/download/output/all`, '_blank');
+};
+
+// API cho Example
+export const getExampleFiles = async () => {
+    const response = await fetch(`${API_BASE_URL}/api/files/list/example`);
+    const data = await response.json();
+    if (!data.success) throw new Error(data.error);
+    return data.files;
+};
+
+// Download example file
+export const downloadExampleFile = (filename) => {
+    window.open(`${API_BASE_URL}/api/files/download/example/${filename}`, '_blank');
 };
