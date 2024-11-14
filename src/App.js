@@ -1,11 +1,14 @@
+// App.js
 import React from 'react';
-import Upload from './Upload';
+import FileUpload from './FileUpload';
+import App from './App';
 
 function App() {
     return (
-        <div className="App" style={{ padding: '20px' }}>
-            <h1>Excel File Processor</h1>
-            <Upload />
+        <div className="page-container">
+            <h2>Content Generation Tool</h2>
+            <FileUpload />
+            <App />
         </div>
     );
 }
